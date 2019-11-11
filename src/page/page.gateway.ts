@@ -14,7 +14,7 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('pages.add')
   add(client: Socket, payload: { page: Page }) {
-    console.log("payload page", payload.page)
+    console.log("payload page", payload.page);
     this.pages.push(payload.page);
     this.server.emit('pages', this.pages);
   }

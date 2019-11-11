@@ -30,7 +30,8 @@
     "arrow-parens": false,
     "object-literal-sort-keys": false,
     "adjacent-overload-signatures": false,
-    "variable-name": false
+    "variable-name": false,
+    "curly": false
   },
   "rulesDirectory": []
 }
