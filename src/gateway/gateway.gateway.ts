@@ -14,8 +14,8 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   }
 
   @SubscribeMessage('gateways.add')
-  add(client: Socket, payload: {gateway: Gateway}) {
-    this.gatewayService.add(payload.gateway);
+  add(client: Socket, gateway: Gateway) {
+    this.gatewayService.add(gateway);
     this.server.emit('gateways', this.gatewayService.get());
   }
 

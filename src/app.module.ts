@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { GatewayModule } from './gateway/gateway.module';
-import { GatewayGateway } from './gateway/gateway.gateway';
 import { PageModule } from './page/page.module';
-import { PageGateway } from './page/page.gateway';
+import { FragmentModule } from './fragment/fragment.module';
 
 @Module({
-  imports: [GatewayModule, PageModule],
+  imports: [GatewayModule, PageModule, FragmentModule],
 })
 export class AppModule {}

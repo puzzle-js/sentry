@@ -1,22 +1,22 @@
 import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Page } from './page.interface';
+import { PageService } from './page.service';
 
 @WebSocketGateway()
 export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
+  constructor(private readonly pageService: PageService) { }
   @WebSocketServer() server: Server;
-  pages: Page[] = [];
 
   @SubscribeMessage('pages.get')
   get() {
-    this.server.emit('pages', this.pages);
+    this.server.emit('pages', this.pageService.get());
   }
 
   @SubscribeMessage('pages.add')
-  add(client: Socket, payload: { page: Page }) {
-    console.log("payload page", payload.page);
-    this.pages.push(payload.page);
-    this.server.emit('pages', this.pages);
+  add(client: Socket, page: Page) {
+    this.pageService.add(page);
+    this.server.emit('pages', this.pageService.get());
   }
 
   afterInit(server: Server) {
