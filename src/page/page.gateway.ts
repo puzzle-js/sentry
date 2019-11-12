@@ -8,15 +8,23 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   constructor(private readonly pageService: PageService) { }
   @WebSocketServer() server: Server;
 
-  @SubscribeMessage('pages.get')
-  get() {
-    this.server.emit('pages', this.pageService.get());
+  @SubscribeMessage('panel.pages.get')
+  getForPanel() {
+    const pages = this.pageService.get();
+    this.server.emit('panel.pages', pages);
   }
 
-  @SubscribeMessage('pages.add')
+  @SubscribeMessage('pages.get')
+  get() {
+    const pages = this.pageService.get();
+    return { event: 'pages', data: pages };
+  }
+
+  @SubscribeMessage('panel.pages.add')
   add(client: Socket, page: Page) {
     this.pageService.add(page);
-    this.server.emit('pages', this.pageService.get());
+    this.server.emit('panel.pages', this.pageService.get());
+    this.server.emit('pages.update', page);
   }
 
   afterInit(server: Server) {
@@ -28,6 +36,6 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`page disconnected ${client.id}`)
+    console.log(`page disconnected ${client.id}`);
   }
 }
