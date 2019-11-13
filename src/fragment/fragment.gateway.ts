@@ -1,4 +1,7 @@
-import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
+import {
+  SubscribeMessage, WebSocketGateway, OnGatewayInit,
+  OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, MessageBody,
+} from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { Fragment } from './fragment.interface';
 import { FragmentService } from './fragment.service';
@@ -8,15 +11,34 @@ export class FragmentGateway implements OnGatewayInit, OnGatewayConnection, OnGa
   constructor(private readonly fragmentService: FragmentService) { }
   @WebSocketServer() server: Server;
 
-  @SubscribeMessage('fragments.get')
-  get() {
-    this.server.emit('fragments', this.fragmentService.get());
+  @SubscribeMessage('panel.fragments.get')
+  getForPanel() {
+    const fragments = this.fragmentService.get();
+    return { event: 'panel.fragments', fragments };
   }
 
-  @SubscribeMessage('fragments.add')
-  add(client: Socket, fragment: Fragment) {
+  @SubscribeMessage('panel.fragments.delete')
+  deleteForPanel(@MessageBody() name: string) {
+    const deletionSuccessful = this.fragmentService.delete(name);
+    if (!deletionSuccessful) return;
+    const fragments = this.fragmentService.get();
+    this.server.emit('panel.fragments', fragments);
+    this.server.emit('fragments.delete', name);
+  }
+
+  @SubscribeMessage('panel.fragments.add')
+  addForPanel(@MessageBody() fragment: Fragment) {
     this.fragmentService.add(fragment);
-    this.server.emit('fragments', this.fragmentService.get());
+    this.server.emit('panel.fragments', this.fragmentService.get());
+    this.server.emit('fragments.add', fragment);
+  }
+
+  @SubscribeMessage('panel.fragments.update')
+  updateForPanel(@MessageBody() fragment: Fragment) {
+    const updateSuccessful = this.fragmentService.update(fragment);
+    if (!updateSuccessful) return;
+    this.server.emit('panel.fragments', this.fragmentService.get());
+    this.server.emit('fragments.update', fragment);
   }
 
   afterInit(server: Server) {

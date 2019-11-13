@@ -9,6 +9,14 @@ export class GatewayService {
     this.gateways.push(gateway);
   }
 
+  delete(name: string) {
+    const gatewayToDelete = this.gateways.find(fr => fr.name === name);
+    if (!gatewayToDelete) return false;
+    const newgateways = this.gateways.filter(fr => fr.name === name);
+    this.gateways = [...newgateways];
+    return true;
+  }
+
   update(gateway: Gateway) {
     const gatewayToUpdate = this.gateways.find(gw => gw.name === gateway.name);
     if (!gatewayToUpdate) return false;

@@ -1,4 +1,7 @@
-import { SubscribeMessage, WebSocketGateway, OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect, WebSocketServer } from '@nestjs/websockets';
+import {
+  SubscribeMessage, WebSocketGateway, OnGatewayInit,
+  OnGatewayConnection, OnGatewayDisconnect, WebSocketServer, MessageBody,
+} from '@nestjs/websockets';
 import { Socket, Server } from 'socket.io';
 import { Gateway } from './gateway.interface';
 import { GatewayService } from './gateway.service';
@@ -8,15 +11,34 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   constructor(private readonly gatewayService: GatewayService) { }
   @WebSocketServer() server: Server;
 
-  @SubscribeMessage('gateways.get')
-  get() {
-    this.server.emit('gateways', this.gatewayService.get());
+  @SubscribeMessage('panel.gateways.get')
+  getForPanel() {
+    const gateways = this.gatewayService.get();
+    return { event: 'panel.gateways', gateways };
   }
 
-  @SubscribeMessage('gateways.add')
-  add(client: Socket, gateway: Gateway) {
-    this.gatewayService.add(gateway);
-    this.server.emit('gateways', this.gatewayService.get());
+  @SubscribeMessage('panel.gateways.delete')
+  deleteForPanel(@MessageBody() name: string) {
+    const deletionSuccessful = this.gatewayService.delete(name);
+    if (!deletionSuccessful) return;
+    const gateways = this.gatewayService.get();
+    this.server.emit('panel.gateways', gateways);
+    this.server.emit('gateways.delete', name);
+  }
+
+  @SubscribeMessage('panel.gateways.add')
+  addForPanel(@MessageBody() fragment: Gateway) {
+    this.gatewayService.add(fragment);
+    this.server.emit('panel.gateways', this.gatewayService.get());
+    this.server.emit('gateways.add', fragment);
+  }
+
+  @SubscribeMessage('panel.gateways.update')
+  updateForPanel(@MessageBody() fragment: Gateway) {
+    const updateSuccessful = this.gatewayService.update(fragment);
+    if (!updateSuccessful) return;
+    this.server.emit('panel.gateways', this.gatewayService.get());
+    this.server.emit('gateways.update', fragment);
   }
 
   afterInit(server: Server) {

@@ -9,6 +9,14 @@ export class FragmentService {
     this.fragments.push(fragment);
   }
 
+  delete(name: string) {
+    const fragmentToDelete = this.fragments.find(fr => fr.name === name);
+    if (!fragmentToDelete) return false;
+    const newfragments = this.fragments.filter(fr => fr.name === name);
+    this.fragments = [...newfragments];
+    return true;
+  }
+
   update(fragment: Fragment) {
     const fragmentToUpdate = this.fragments.find(gw => gw.name === fragment.name);
     if (!fragmentToUpdate) return false;
