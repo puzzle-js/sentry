@@ -14,7 +14,7 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @SubscribeMessage('panel.pages.get')
   getForPanel() {
     const pages = this.pageService.get();
-    return { event: 'panel.pages', pages };
+    return { event: 'panel.pages', data: pages };
   }
 
   @SubscribeMessage('panel.pages.delete')

@@ -14,7 +14,7 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   @SubscribeMessage('panel.gateways.get')
   getForPanel() {
     const gateways = this.gatewayService.get();
-    return { event: 'panel.gateways', gateways };
+    return { event: 'panel.gateways', data: gateways };
   }
 
   @SubscribeMessage('panel.gateways.delete')

@@ -12,4 +12,5 @@ export enum FragmentConfig {
   CLIENT_ASYNC,
   WAITED,
   PRIMARY,
+  DECENTRALIZED,
 }

@@ -14,7 +14,7 @@ export class FragmentGateway implements OnGatewayInit, OnGatewayConnection, OnGa
   @SubscribeMessage('panel.fragments.get')
   getForPanel() {
     const fragments = this.fragmentService.get();
-    return { event: 'panel.fragments', fragments };
+    return { event: 'panel.fragments', data: fragments };
   }
 
   @SubscribeMessage('panel.fragments.delete')
