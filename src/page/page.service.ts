@@ -20,8 +20,8 @@ export class PageService {
   update(page: Page) {
     const pageToUpdate = this.pages.find(pg => pg.name === page.name);
     if (!pageToUpdate) return false;
-    const newpages = this.pages.filter(pg => pg.name === pageToUpdate.name);
-    this.pages = [...newpages, { ...pageToUpdate, ...page }];
+    const newpages = this.pages.filter(pg => pg.name !== pageToUpdate.name);
+    this.pages = [...newpages, page ];
     return true;
   }
 

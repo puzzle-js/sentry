@@ -23,14 +23,14 @@ export class FragmentGateway implements OnGatewayInit, OnGatewayConnection, OnGa
     if (!deletionSuccessful) return;
     const fragments = this.fragmentService.get();
     this.server.emit('panel.fragments', fragments);
-    this.server.emit('fragments.delete', name);
+    this.server.emit('fragment.delete', name);
   }
 
   @SubscribeMessage('panel.fragments.add')
   addForPanel(@MessageBody() fragment: Fragment) {
     this.fragmentService.add(fragment);
     this.server.emit('panel.fragments', this.fragmentService.get());
-    this.server.emit('fragments.add', fragment);
+    this.server.emit('fragment.add', fragment);
   }
 
   @SubscribeMessage('panel.fragments.update')
@@ -38,7 +38,13 @@ export class FragmentGateway implements OnGatewayInit, OnGatewayConnection, OnGa
     const updateSuccessful = this.fragmentService.update(fragment);
     if (!updateSuccessful) return;
     this.server.emit('panel.fragments', this.fragmentService.get());
-    this.server.emit('fragments.update', fragment);
+    this.server.emit('fragment.update', fragment);
+  }
+
+  @SubscribeMessage('fragments.get')
+  get() {
+    const fragments = this.fragmentService.get();
+    return { event: 'fragments', data: fragments };
   }
 
   afterInit(server: Server) {

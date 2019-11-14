@@ -20,8 +20,8 @@ export class GatewayService {
   update(gateway: Gateway) {
     const gatewayToUpdate = this.gateways.find(gw => gw.name === gateway.name);
     if (!gatewayToUpdate) return false;
-    const newGateways = this.gateways.filter(gw => gw.name === gatewayToUpdate.name);
-    this.gateways = [...newGateways, { ...gatewayToUpdate, ...gateway }];
+    const newGateways = this.gateways.filter(gw => gw.name !== gatewayToUpdate.name);
+    this.gateways = [...newGateways, gateway];
   }
 
   get() {

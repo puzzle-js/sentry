@@ -23,14 +23,14 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     if (!deletionSuccessful) return;
     const gateways = this.gatewayService.get();
     this.server.emit('panel.gateways', gateways);
-    this.server.emit('gateways.delete', name);
+    this.server.emit('gateway.delete', name);
   }
 
   @SubscribeMessage('panel.gateways.add')
   addForPanel(@MessageBody() fragment: Gateway) {
     this.gatewayService.add(fragment);
     this.server.emit('panel.gateways', this.gatewayService.get());
-    this.server.emit('gateways.add', fragment);
+    this.server.emit('gateway.add', fragment);
   }
 
   @SubscribeMessage('panel.gateways.update')
@@ -38,7 +38,13 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     const updateSuccessful = this.gatewayService.update(fragment);
     if (!updateSuccessful) return;
     this.server.emit('panel.gateways', this.gatewayService.get());
-    this.server.emit('gateways.update', fragment);
+    this.server.emit('gateway.update', fragment);
+  }
+
+  @SubscribeMessage('gateways.get')
+  get() {
+    const gateways = this.gatewayService.get();
+    return { event: 'gateways', data: gateways };
   }
 
   afterInit(server: Server) {

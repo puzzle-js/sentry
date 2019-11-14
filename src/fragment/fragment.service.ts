@@ -20,8 +20,8 @@ export class FragmentService {
   update(fragment: Fragment) {
     const fragmentToUpdate = this.fragments.find(gw => gw.name === fragment.name);
     if (!fragmentToUpdate) return false;
-    const newfragments = this.fragments.filter(gw => gw.name === fragmentToUpdate.name);
-    this.fragments = [...newfragments, { ...fragmentToUpdate, ...fragment }];
+    const newfragments = this.fragments.filter(gw => gw.name !== fragmentToUpdate.name);
+    this.fragments = [...newfragments, fragment ];
   }
 
   get() {

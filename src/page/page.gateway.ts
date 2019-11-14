@@ -23,14 +23,14 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     if (!deletionSuccessful) return;
     const pages = this.pageService.get();
     this.server.emit('panel.pages', pages);
-    this.server.emit('pages.delete', name);
+    this.server.emit('page.delete', name);
   }
 
   @SubscribeMessage('panel.pages.add')
   addForPanel(@MessageBody() page: Page) {
     this.pageService.add(page);
     this.server.emit('panel.pages', this.pageService.get());
-    this.server.emit('pages.add', page);
+    this.server.emit('page.add', page);
   }
 
   @SubscribeMessage('panel.pages.update')
@@ -38,7 +38,7 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     const updateSuccessful = this.pageService.update(page);
     if (!updateSuccessful) return;
     this.server.emit('panel.pages', this.pageService.get());
-    this.server.emit('pages.update', page);
+    this.server.emit('page.update', page);
   }
 
   @SubscribeMessage('pages.get')
