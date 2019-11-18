@@ -27,18 +27,18 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   }
 
   @SubscribeMessage('panel.gateways.add')
-  addForPanel(@MessageBody() fragment: Gateway) {
-    this.gatewayService.add(fragment);
+  addForPanel(@MessageBody() gateway: Gateway) {
+    this.gatewayService.add(gateway);
     this.server.emit('panel.gateways', this.gatewayService.get());
-    this.server.emit('gateway.add', fragment);
+    this.server.emit('gateway.add', gateway);
   }
 
   @SubscribeMessage('panel.gateways.update')
-  updateForPanel(@MessageBody() fragment: Gateway) {
-    const updateSuccessful = this.gatewayService.update(fragment);
+  updateForPanel(@MessageBody() gateway: Gateway) {
+    const updateSuccessful = this.gatewayService.update(gateway);
     if (!updateSuccessful) return;
     this.server.emit('panel.gateways', this.gatewayService.get());
-    this.server.emit('gateway.update', fragment);
+    this.server.emit('gateway.update', gateway);
   }
 
   @SubscribeMessage('gateways.get')
