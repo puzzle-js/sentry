@@ -1,6 +1,6 @@
 {
   "name": "@puzzle-js/sentry",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "PuzzleJS Content Management System",
   "author": "Mehmet Sefa Balik @mehmetsefabalik",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "@nestjs/platform-socket.io": "^6.9.0",
     "@nestjs/serve-static": "^1.0.1",
     "@nestjs/websockets": "^6.9.0",
-    "@puzzle-js/sentry-ui": "0.0.4",
+    "@puzzle-js/sentry-ui": "0.0.5",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3",
