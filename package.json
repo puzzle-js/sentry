@@ -1,8 +1,8 @@
 {
-  "name": "sentry-server",
+  "name": "@puzzle-js/sentry",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "PuzzleJS Content Management System",
+  "author": "Mehmet Sefa Balik @mehmetsefabalik",
   "license": "MIT",
   "scripts": {
     "build": "rimraf dist && tsc -p tsconfig.build.json",
