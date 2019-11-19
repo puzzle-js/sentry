@@ -12,38 +12,38 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('panel.gateways.get')
-  getForPanel() {
-    const gateways = this.gatewayService.get();
+  async getForPanel() {
+    const gateways = await this.gatewayService.get();
     return { event: 'panel.gateways', data: gateways };
   }
 
   @SubscribeMessage('panel.gateways.delete')
-  deleteForPanel(@MessageBody() name: string) {
-    const deletionSuccessful = this.gatewayService.delete(name);
+  async deleteForPanel(@MessageBody() name: string) {
+    const deletionSuccessful = await this.gatewayService.delete(name);
     if (!deletionSuccessful) return;
-    const gateways = this.gatewayService.get();
+    const gateways = await this.gatewayService.get();
     this.server.emit('panel.gateways', gateways);
     this.server.emit('gateway.delete', name);
   }
 
   @SubscribeMessage('panel.gateways.add')
-  addForPanel(@MessageBody() gateway: Gateway) {
-    this.gatewayService.add(gateway);
-    this.server.emit('panel.gateways', this.gatewayService.get());
+  async addForPanel(@MessageBody() gateway: Gateway) {
+    await this.gatewayService.add(gateway);
+    this.server.emit('panel.gateways', await this.gatewayService.get());
     this.server.emit('gateway.add', gateway);
   }
 
   @SubscribeMessage('panel.gateways.update')
-  updateForPanel(@MessageBody() gateway: Gateway) {
-    const updateSuccessful = this.gatewayService.update(gateway);
+  async updateForPanel(@MessageBody() gateway: Gateway) {
+    const updateSuccessful = await this.gatewayService.update(gateway);
     if (!updateSuccessful) return;
-    this.server.emit('panel.gateways', this.gatewayService.get());
+    this.server.emit('panel.gateways', await this.gatewayService.get());
     this.server.emit('gateway.update', gateway);
   }
 
   @SubscribeMessage('gateways.get')
-  get() {
-    const gateways = this.gatewayService.get();
+  async get() {
+    const gateways = await this.gatewayService.get();
     return { event: 'gateways', data: gateways };
   }
 

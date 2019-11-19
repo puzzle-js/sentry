@@ -1,30 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { Gateway } from './gateway.interface';
+import { CouchbaseService } from '../couchbase/couchbase.service';
+import { ViewQuery } from 'couchbase';
 
 @Injectable()
 export class GatewayService {
-  private gateways: Gateway[] = [];
+  constructor(private readonly couchbaseService: CouchbaseService) { }
 
   add(gateway: Gateway) {
-    this.gateways.push(gateway);
+    return new Promise((resolve, reject) => {
+      this.couchbaseService.getBucket().insert(`gateway_${gateway.name}`, {...gateway, type: 'gateway'}, (err, data) => {
+        if (err) return reject(null);
+        resolve(data);
+      });
+    });
   }
 
   delete(name: string) {
-    const gatewayToDelete = this.gateways.find(fr => fr.name === name);
-    if (!gatewayToDelete) return false;
-    const newgateways = this.gateways.filter(fr => fr.name === name);
-    this.gateways = [...newgateways];
-    return true;
+    return new Promise((resolve, reject) => {
+      this.couchbaseService.getBucket().remove(`gateway_${name}`, (err, data) => {
+        if (err) return reject(null);
+        resolve(data);
+      });
+    });
   }
 
   update(gateway: Gateway) {
-    const gatewayToUpdate = this.gateways.find(gw => gw.name === gateway.name);
-    if (!gatewayToUpdate) return false;
-    const newGateways = this.gateways.filter(gw => gw.name !== gatewayToUpdate.name);
-    this.gateways = [...newGateways, gateway];
+    return new Promise((resolve, reject) => {
+      this.couchbaseService.getBucket().upsert(`gateway_${gateway.name}`, {...gateway, type: 'gateway'}, (err, data) => {
+        if (err) return reject(null);
+        resolve(data);
+      });
+    });
   }
 
   get() {
-    return this.gateways;
+    return new Promise((resolve, reject) => {
+      const query = ViewQuery
+        .from('gateway', 'getAll')
+        .stale(ViewQuery.Update.BEFORE);
+      this.couchbaseService.getBucket().query(query, (err, data) => {
+        console.log("err", err);
+        console.log("data", data)
+        if (err) return reject(null);
+        const gateways = data.map((g) => g.value);
+        resolve(gateways);
+      });
+    });
   }
 }

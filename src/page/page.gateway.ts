@@ -12,38 +12,38 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('panel.pages.get')
-  getForPanel() {
-    const pages = this.pageService.get();
+  async getForPanel() {
+    const pages = await this.pageService.get();
     return { event: 'panel.pages', data: pages };
   }
 
   @SubscribeMessage('panel.pages.delete')
-  deleteForPanel(@MessageBody() name: string) {
-    const deletionSuccessful = this.pageService.delete(name);
+  async deleteForPanel(@MessageBody() name: string) {
+    const deletionSuccessful = await this.pageService.delete(name);
     if (!deletionSuccessful) return;
-    const pages = this.pageService.get();
+    const pages = await this.pageService.get();
     this.server.emit('panel.pages', pages);
     this.server.emit('page.delete', name);
   }
 
   @SubscribeMessage('panel.pages.add')
-  addForPanel(@MessageBody() page: Page) {
-    this.pageService.add(page);
-    this.server.emit('panel.pages', this.pageService.get());
+  async addForPanel(@MessageBody() page: Page) {
+    await this.pageService.add(page);
+    this.server.emit('panel.pages', await this.pageService.get());
     this.server.emit('page.add', page);
   }
 
   @SubscribeMessage('panel.pages.update')
-  updateForPanel(@MessageBody() page: Page) {
-    const updateSuccessful = this.pageService.update(page);
+  async updateForPanel(@MessageBody() page: Page) {
+    const updateSuccessful = await this.pageService.update(page);
     if (!updateSuccessful) return;
-    this.server.emit('panel.pages', this.pageService.get());
+    this.server.emit('panel.pages', await this.pageService.get());
     this.server.emit('page.update', page);
   }
 
   @SubscribeMessage('pages.get')
-  get() {
-    const pages = this.pageService.get();
+  async get() {
+    const pages = await this.pageService.get();
     return { event: 'pages', data: pages };
   }
 

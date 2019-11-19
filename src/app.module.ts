@@ -3,7 +3,8 @@ import { GatewayModule } from './gateway/gateway.module';
 import { PageModule } from './page/page.module';
 import { FragmentModule } from './fragment/fragment.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import { join, dirname } from 'path';
+import { dirname } from 'path';
+import { CouchbaseModule } from './couchbase/couchbase.module';
 
 const sentryUi = dirname(require.resolve('@puzzle-js/sentry-ui'));
 
@@ -15,6 +16,7 @@ const sentryUi = dirname(require.resolve('@puzzle-js/sentry-ui'));
     GatewayModule,
     PageModule,
     FragmentModule,
+    CouchbaseModule,
   ],
 })
 export class AppModule { }
