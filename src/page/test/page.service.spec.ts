@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PageService } from '../page.service';
+import { CouchbaseService } from '../../couchbase/couchbase.service';
 
 describe('PageService', () => {
   let service: PageService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PageService],
+      providers: [PageService, CouchbaseService],
     }).compile();
 
     service = module.get<PageService>(PageService);
