@@ -30,7 +30,7 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   async addForPanel(@MessageBody() page: Page) {
     await this.pageService.add(page);
     this.server.emit('panel.pages', await this.pageService.get());
-    this.server.emit('page.add', page);
+    this.server.emit('page.update', page);
   }
 
   @SubscribeMessage('panel.pages.update')
