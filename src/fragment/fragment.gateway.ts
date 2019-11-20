@@ -18,12 +18,12 @@ export class FragmentGateway implements OnGatewayInit, OnGatewayConnection, OnGa
   }
 
   @SubscribeMessage('panel.fragments.delete')
-  deleteForPanel(@MessageBody() name: string) {
-    const deletionSuccessful = this.fragmentService.delete(name);
+  deleteForPanel(@MessageBody() body: {name: string}) {
+    const deletionSuccessful = this.fragmentService.delete(body.name);
     if (!deletionSuccessful) return;
     const fragments = this.fragmentService.get();
     this.server.emit('panel.fragments', fragments);
-    this.server.emit('fragment.delete', name);
+    this.server.emit('fragment.delete', body.name);
   }
 
   @SubscribeMessage('panel.fragments.add')

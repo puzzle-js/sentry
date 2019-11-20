@@ -18,12 +18,12 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   }
 
   @SubscribeMessage('panel.gateways.delete')
-  async deleteForPanel(@MessageBody() name: string) {
-    const deletionSuccessful = await this.gatewayService.delete(name);
+  async deleteForPanel(@MessageBody() body: {name: string}) {
+    const deletionSuccessful = await this.gatewayService.delete(body.name);
     if (!deletionSuccessful) return;
     const gateways = await this.gatewayService.get();
     this.server.emit('panel.gateways', gateways);
-    this.server.emit('gateway.delete', name);
+    this.server.emit('gateway.delete', body.name);
   }
 
   @SubscribeMessage('panel.gateways.add')

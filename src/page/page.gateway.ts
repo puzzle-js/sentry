@@ -18,12 +18,12 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('panel.pages.delete')
-  async deleteForPanel(@MessageBody() name: string) {
-    const deletionSuccessful = await this.pageService.delete(name);
+  async deleteForPanel(@MessageBody() body: {name: string}) {
+    const deletionSuccessful = await this.pageService.delete(body.name);
     if (!deletionSuccessful) return;
     const pages = await this.pageService.get();
     this.server.emit('panel.pages', pages);
-    this.server.emit('page.delete', name);
+    this.server.emit('page.delete', body.name);
   }
 
   @SubscribeMessage('panel.pages.add')
