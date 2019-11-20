@@ -40,8 +40,6 @@ export class GatewayService {
         .from('gateway', 'getAll')
         .stale(ViewQuery.Update.BEFORE);
       this.couchbaseService.getBucket().query(query, (err, data) => {
-        console.log("err", err);
-        console.log("data", data)
         if (err) return reject(null);
         const gateways = data.map((g) => g.value);
         resolve(gateways);

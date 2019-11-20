@@ -48,14 +48,14 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
   }
 
   afterInit(server: Server) {
-    console.log('gateway init');
+    // console.log('gateway init');
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    console.log(`gateway connected ${client.id} ${args}`);
+    // console.log(`gateway connected ${client.id} ${args}`);
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`gateway disconnected ${client.id}`);
+    // console.log(`gateway disconnected ${client.id}`);
   }
 }

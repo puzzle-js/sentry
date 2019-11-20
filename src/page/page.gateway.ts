@@ -48,14 +48,14 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   afterInit(server: Server) {
-    console.log('page init');
+    // console.log('page init');
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    console.log(`page connected ${client.id} ${args}`);
+    // console.log(`page connected ${client.id} ${args}`);
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`page disconnected ${client.id}`);
+    // console.log(`page disconnected ${client.id}`);
   }
 }

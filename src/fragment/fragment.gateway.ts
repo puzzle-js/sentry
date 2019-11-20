@@ -48,14 +48,14 @@ export class FragmentGateway implements OnGatewayInit, OnGatewayConnection, OnGa
   }
 
   afterInit(server: Server) {
-    console.log('fragment init');
+    // console.log('fragment init');
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    console.log(`fragment connected ${client.id} ${args}`);
+    // console.log(`fragment connected ${client.id} ${args}`);
   }
 
   handleDisconnect(client: Socket) {
-    console.log(`fragment disconnected ${client.id}`);
+    // console.log(`fragment disconnected ${client.id}`);
   }
 }
