@@ -18,7 +18,8 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   }
 
   @SubscribeMessage('panel.pages.delete')
-  async deleteForPanel(@MessageBody() body: {name: string}) {
+  async deleteForPanel(@MessageBody() body: { name: string }) {
+    if (!body.name) return;
     const deletionSuccessful = await this.pageService.delete(body.name);
     if (!deletionSuccessful) return;
     const pages = await this.pageService.get();
@@ -28,6 +29,7 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('panel.pages.add')
   async addForPanel(@MessageBody() page: Page) {
+    if (!page.name) return;
     await this.pageService.add(page);
     this.server.emit('panel.pages', await this.pageService.get());
     this.server.emit('page.update', page);
@@ -35,6 +37,7 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   @SubscribeMessage('panel.pages.update')
   async updateForPanel(@MessageBody() page: Page) {
+    if (!page.name) return;
     const updateSuccessful = await this.pageService.update(page);
     if (!updateSuccessful) return;
     this.server.emit('panel.pages', await this.pageService.get());

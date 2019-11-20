@@ -41,7 +41,11 @@ export class PageService {
       this.couchbaseService.getBucket().query(query, (err, data) => {
         if (err) return reject(null);
         const pages = data.map((d) => d.value);
-        pages.sort((a, b) => Number(a.index) > Number(b.index));
+        pages.sort((a, b) => {
+          if (Number(a.index) > Number(b.index)) return 1;
+          if (Number(a.index) < Number(b.index)) return -1;
+          return 0;
+        });
         resolve(pages);
       });
     });
