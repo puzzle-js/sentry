@@ -5,6 +5,8 @@ import {
 import { Server, Socket } from 'socket.io';
 import { Page } from './page.interface';
 import { PageService } from './page.service';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../guards/auth.guard';
 
 @WebSocketGateway()
 export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -17,6 +19,7 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     return { event: 'panel.pages', data: pages };
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.pages.delete')
   async deleteForPanel(@MessageBody() body: { name: string }) {
     if (!body.name) return;
@@ -27,16 +30,20 @@ export class PageGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
     this.server.emit('page.delete', body.name);
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.pages.add')
   async addForPanel(@MessageBody() page: Page) {
+    delete (page as any).auth;
     if (!page.name) return;
     await this.pageService.add(page);
     this.server.emit('panel.pages', await this.pageService.get());
     this.server.emit('page.update', page);
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.pages.update')
   async updateForPanel(@MessageBody() page: Page) {
+    delete (page as any).auth;
     if (!page.name) return;
     const updateSuccessful = await this.pageService.update(page);
     if (!updateSuccessful) return;

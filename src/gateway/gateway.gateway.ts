@@ -5,6 +5,8 @@ import {
 import { Socket, Server } from 'socket.io';
 import { Gateway } from './gateway.interface';
 import { GatewayService } from './gateway.service';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../guards/auth.guard';
 
 @WebSocketGateway()
 export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
@@ -17,6 +19,7 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     return { event: 'panel.gateways', data: gateways };
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.gateways.delete')
   async deleteForPanel(@MessageBody() body: {name: string}) {
     const deletionSuccessful = await this.gatewayService.delete(body.name);
@@ -26,15 +29,19 @@ export class GatewayGateway implements OnGatewayInit, OnGatewayConnection, OnGat
     this.server.emit('gateway.delete', body.name);
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.gateways.add')
   async addForPanel(@MessageBody() gateway: Gateway) {
+    delete (gateway as any).auth;
     await this.gatewayService.add(gateway);
     this.server.emit('panel.gateways', await this.gatewayService.get());
     this.server.emit('gateway.add', gateway);
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.gateways.update')
   async updateForPanel(@MessageBody() gateway: Gateway) {
+    delete (gateway as any).auth;
     const updateSuccessful = await this.gatewayService.update(gateway);
     if (!updateSuccessful) return;
     this.server.emit('panel.gateways', await this.gatewayService.get());
