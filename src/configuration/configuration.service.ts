@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CouchbaseService } from '../couchbase/couchbase.service';
 import { Configuration } from './configuration.interface';
 import { ViewQuery } from 'couchbase';
+import { PlatformTypes } from '../enums';
 
 @Injectable()
 export class ConfigurationService {
