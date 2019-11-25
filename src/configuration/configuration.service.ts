@@ -8,7 +8,7 @@ import { PlatformTypes } from '../enums';
 export class ConfigurationService {
   constructor(private readonly couchbaseService: CouchbaseService) { }
 
-  add(type: PlatformTypes, name: string, configuration: Configuration[]) {
+  add(type: PlatformTypes, name: string, configuration: Configuration) {
     return new Promise((resolve, reject) => {
       this.couchbaseService.getBucket().insert(`configuration_${type}_${name}`, {configuration, type: `configuration_${type}`}, (err, data) => {
         if (err) return reject(null);
@@ -39,7 +39,6 @@ export class ConfigurationService {
     return new Promise((resolve, reject) => {
       this.couchbaseService.getBucket().get(`configuration_${type}_${name}`, (err, data) => {
         if (err) return reject(null);
-        console.log("get data: ", data);
         resolve(data.map((g) => g.value));
       });
     });
@@ -52,7 +51,7 @@ export class ConfigurationService {
         .stale(ViewQuery.Update.BEFORE);
       this.couchbaseService.getBucket().query(query, (err, data) => {
         if (err) return reject(null);
-        resolve(data.map((g) => g.value));
+        resolve(data.map((g) => g.value?.configuration));
       });
     });
   }
