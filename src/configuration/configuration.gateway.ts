@@ -3,6 +3,8 @@ import { ConfigurationService } from './configuration.service';
 import { Server } from 'socket.io';
 import { Configuration } from './configuration.interface';
 import { PlatformTypes } from '../enums';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../guards/auth.guard';
 
 @WebSocketGateway()
 export class ConfigurationGateway {
@@ -21,48 +23,60 @@ export class ConfigurationGateway {
     return { event: `panel.configurations.gateways`, data: configs };
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.configurations.storefront.add')
   async addStorefrontConfigs(@MessageBody() body: { configurations: Configuration, name: string }) {
+    delete (body as any).auth;
     if (!body.configurations) return null;
     await this.configurationService.add(PlatformTypes.Storefront, body.name, body.configurations);
     this.server.emit('panel.configurations.storefronts', await this.configurationService.getAll(PlatformTypes.Storefront));
     this.server.emit(`configurations.storefront.update`, body.configurations);
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.configurations.gateway.add')
   async addGatewayConfigs(@MessageBody() body: { configurations: Configuration, name: string }) {
+    delete (body as any).auth;
     if (!body.configurations) return null;
     await this.configurationService.add(PlatformTypes.Gateway, body.name, body.configurations);
     this.server.emit('panel.configurations.gateways', await this.configurationService.getAll(PlatformTypes.Gateway));
     this.server.emit(`configurations.gateway.update`, body.configurations);
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.configurations.storefront.update')
   async updateStorefrontConfigs(@MessageBody() body: { configurations: Configuration, name: string }) {
+    delete (body as any).auth;
     if (!body.configurations) return null;
     await this.configurationService.update(PlatformTypes.Storefront, body.name, body.configurations);
     this.server.emit('panel.configurations.storefronts', await this.configurationService.getAll(PlatformTypes.Storefront));
     this.server.emit(`configurations.storefront.update`, body.configurations);
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.configurations.gateway.update')
   async updateGatewayConfigs(@MessageBody() body: { configurations: Configuration, name: string }) {
+    delete (body as any).auth;
     if (!body.configurations) return null;
     await this.configurationService.update(PlatformTypes.Gateway, body.name, body.configurations);
     this.server.emit('panel.configurations.gateways', await this.configurationService.getAll(PlatformTypes.Gateway));
     this.server.emit(`configurations.gateway.update`, body.configurations);
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.configurations.storefront.delete')
   async deleteStorefrontConfigs(@MessageBody() body: { name: string }) {
+    delete (body as any).auth;
     if (!body.name) return null;
     await this.configurationService.delete(PlatformTypes.Storefront, body.name);
     this.server.emit('panel.configurations.storefronts', await this.configurationService.getAll(PlatformTypes.Storefront));
     this.server.emit(`configurations.storefront.delete`, body.name);
   }
 
+  @UseGuards(AuthGuard)
   @SubscribeMessage('panel.configurations.gateway.delete')
   async deleteGatewayConfigs(@MessageBody() body: { name: string }) {
+    delete (body as any).auth;
     if (!body.name) return null;
     await this.configurationService.delete(PlatformTypes.Gateway, body.name);
     this.server.emit('panel.configurations.gateways', await this.configurationService.getAll(PlatformTypes.Gateway));
